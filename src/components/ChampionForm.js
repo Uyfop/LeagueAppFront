@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import ChampionService from '../services/ChampionService';
+import ChampionService from '../services/ChampionService.js';
 
-const ChampionForm = () => {
+const ChampionForm = ({ onChampionCreated }) => {
     const [champion, setChampion] = useState({ champName: '', champType: '' });
 
     const handleSubmit = e => {
         e.preventDefault();
         ChampionService.createChampion(champion)
-            .then(response => console.log('Champion created:', response.data))
+            .then(response => {
+                console.log('Champion created:', response.data)
+                onChampionCreated(response.data);
+                setChampion({ champName: '', champType: '' });
+            })
             .catch(error => console.error('Error creating champion:', error));
     };
 
