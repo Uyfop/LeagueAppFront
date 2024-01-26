@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import ChampionService from '../services/ChampionService.js';
-import '../styles/ChampionList.css';
+import ChampionService from '../../services/ChampionService.js';
+import '../../styles/ChampionList.css';
+import { useAuth } from '../../services/AuthProvider.js';
 
 const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
     const [champions, setChampions] = useState([]);
@@ -8,15 +9,19 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
     const [newChampType, setNewChampType] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
+    const { token } = useAuth();
 
 
     useEffect(() => {
         loadChampions(currentPage);
-    }, [refreshChampions, currentPage]);
+    }, [refreshChampions, currentPage, token]);
 
     const loadChampions = (page) => {
-        ChampionService.getAllChampionsWithPagination(page, 2)
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+        ChampionService.getAllChampionsWithPagination(page, 2, headers)
             .then((response) => {
                 setChampions(response.data.content);
                 setTotalPages(response.data.totalPages);
@@ -25,7 +30,12 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
     };
 
     const handleDelete = (championName) => {
-        ChampionService.deleteChampion(championName)
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        ChampionService.deleteChampion(championName, headers)
             .then(() => {
                 console.log('Champion deleted:', championName);
                 onChampionDeleted();
@@ -45,10 +55,15 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
             return;
         }
 
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
         ChampionService.updateChampion(selectedChampion.champName, {
             champName: selectedChampion.champName,
             champType: newChampType,
-        })
+        }, headers)
             .then(() => {
                 console.log('Champion updated:');
                 onChampionDeleted();
@@ -67,9 +82,6 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
     return (
         <div>
             <h1>Champion List</h1>
-            <span>Current Page: {currentPage}       </span>
-            <button onClick={() => handlePageChange(currentPage - 1)}>-</button>
-            <button onClick={() => handlePageChange(currentPage + 1)}>+</button>
             <div className="champion-container">
 
                 <div className="champion-info">
@@ -117,7 +129,16 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
                         ))}
                         </tbody>
                     </table>
-
+                    <div>
+                        <span>Page: {currentPage + 1}</span>
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+                            Previous
+                        </button>
+                        <button onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages - 1}>
+                            Next
+                        </button>
+                    </div>
                 </div>
 
             </div>

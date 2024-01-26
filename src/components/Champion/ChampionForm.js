@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import ChampionService from '../services/ChampionService.js';
-
+import ChampionService from '../../services/ChampionService.js';
+import { useAuth } from '../../services/AuthProvider.js';
 const ChampionForm = ({ onChampionCreated }) => {
     const [champion, setChampion] = useState({ champName: '', champType: '' });
+    const { token } = useAuth();
 
     const handleSubmit = e => {
         e.preventDefault();
-        ChampionService.createChampion(champion)
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+        ChampionService.createChampion(champion, headers)
             .then(response => {
                 console.log('Champion created:', response.data)
                 onChampionCreated(response.data);
