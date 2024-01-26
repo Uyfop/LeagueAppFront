@@ -26,6 +26,9 @@ const MainNav = () => {
                 <li>
                     <Link to="/abilities">Abilities</Link>
                 </li>
+                <li>
+                    <Link to="/items">Items</Link>
+                </li>
                 {isAuthenticated ? (
                     <li className="nav-login">
                         <Link to="/" onClick={handleLogout}>Logout</Link>

@@ -140,7 +140,6 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     );

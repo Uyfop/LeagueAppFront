@@ -7,6 +7,7 @@ import {AuthProvider} from "./services/AuthProvider.js";
 import Signup from "./components/Auth/Signup.js";
 import Login from "./components/Auth/Login.js";
 import AbilitiesPage from "./components/abilities/AbilitiesPage.js"
+import ItemsPage from "./components/Items/ItemsPage.js";
 
 const App = () => {
     return (
@@ -19,6 +20,7 @@ const App = () => {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/abilities" element={<AbilitiesPage/>} />
+                    <Route path="/items" element={<ItemsPage/>} />
                 </Routes>
             </Router>
         </AuthProvider>

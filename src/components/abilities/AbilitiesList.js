@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import AbilitiesService from '../../services/AbilitiesService.js';
 import { useAuth } from '../../services/AuthProvider.js';
+import UpdateAbilityForm from "./UpdateAbilityForm.js";
 
-const AbilitiesList = ({ refreshAbilities }) => {
+const AbilitiesList = ({ refreshAbilities, onAbilityDeleted }) => {
+    const [selectedAbility, setSelectedAbility] = useState(null);
     const [abilities, setAbilities] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
     const { token } = useAuth();
     const itemsPerPage = 3;
 
@@ -20,20 +22,59 @@ const AbilitiesList = ({ refreshAbilities }) => {
             'Authorization': `Bearer ${token}`,
         };
 
-        setLoading(true);
         AbilitiesService.getAllAbilitiesWithPagination(page, itemsPerPage, headers)
             .then((response) => {
                 setAbilities(response.data.content);
                 setTotalPages(response.data.totalPages);
             })
             .catch((error) => console.error('Error fetching abilities:', error))
-            .finally(() => setLoading(false));
     };
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < totalPages) {
             setCurrentPage(newPage);
         }
+    };
+
+    const handleDelete = (abilityName) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        AbilitiesService.deleteAbilities(abilityName, headers)
+            .then(() => {
+                console.log('Ability deleted:', abilityName);
+                onAbilityDeleted();
+            })
+            .catch((error) => console.error('Error deleting ability:', error));
+    };
+
+    const handleUpdate = (abilityName) => {
+        setSelectedAbility(abilities.find((ability) => ability.abilityName === abilityName));
+    };
+    const handleUpdateAbility = (abilityName, updatedAbility) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        AbilitiesService.updateAbility(abilityName, updatedAbility, headers)
+            .then(() => {
+                console.log('Ability updated:', abilityName);
+                setSelectedAbility(null);
+                onAbilityDeleted();
+                toggleUpdateForm();
+            })
+            .catch((error) => console.error('Error updating ability:', error));
+    };
+
+    const handleCancelUpdate = () => {
+        setSelectedAbility(null);
+    };
+
+    const toggleUpdateForm = () => {
+        setIsUpdateFormVisible(!isUpdateFormVisible);
     };
 
     return (
@@ -44,6 +85,7 @@ const AbilitiesList = ({ refreshAbilities }) => {
                     <table>
                         <thead>
                         <tr>
+                            <tr></tr>
                             <th>Ability Name</th>
                             <th>Ability Cost</th>
                             <th>Ability Cooldown</th>
@@ -53,10 +95,41 @@ const AbilitiesList = ({ refreshAbilities }) => {
                         <tbody>
                         {abilities.map((ability) => (
                             <tr key={ability.abilityName}>
+                                <td className="ability-portraits">
+                                    <div>
+                                        <img src={`/images/${ability.abilityName.toLowerCase()}.jpg`}
+                                             alt={ability.abilityName}/>
+                                    </div>
+                                </td>
                                 <td>{ability.abilityName}</td>
                                 <td>{ability.abilityCost}</td>
                                 <td>{ability.abilityCD}</td>
                                 <td>{ability.championName.champName}</td>
+                                <td>
+                                    {!isUpdateFormVisible && (
+                                        <>
+                                            <button onClick={() => handleDelete(ability.abilityName)}>
+                                                Delete
+                                            </button>
+                                            <button onClick={() => {
+                                                handleUpdate(ability.abilityName);
+                                                toggleUpdateForm();
+                                            }}>
+                                                Update
+                                            </button>
+                                        </>
+                                    )}
+                                    {isUpdateFormVisible && selectedAbility && selectedAbility.abilityName === ability.abilityName && (
+                                        <UpdateAbilityForm
+                                            ability={selectedAbility}
+                                            onUpdate={handleUpdateAbility}
+                                            onCancel={() => {
+                                                toggleUpdateForm();
+                                                handleCancelUpdate();
+                                            }}
+                                        />
+                                    )}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
@@ -66,7 +139,8 @@ const AbilitiesList = ({ refreshAbilities }) => {
                         <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
                             Previous
                         </button>
-                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>
+                        <button onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages - 1}>
                             Next
                         </button>
                     </div>

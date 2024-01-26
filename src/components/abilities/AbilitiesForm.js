@@ -3,7 +3,6 @@ import AbilitiesService from '../../services/AbilitiesService.js';
 import { useAuth } from '../../services/AuthProvider.js';
 import ChampionService from "../../services/ChampionService.js";
 
-
 const AbilitiesForm = ({onAbilityCreated}) => {
     const [ability, setAbility] = useState({
         abilityName: "",

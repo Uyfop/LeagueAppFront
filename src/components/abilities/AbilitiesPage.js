@@ -1,5 +1,3 @@
-// AbilitiesPage.js
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../services/AuthProvider.js';
 import UnathorizedMessage from "../Auth/UnathorizedMessage.js";
@@ -11,7 +9,6 @@ const AbilitiesPage = () => {
     const [refreshAbilities, setRefreshAbilities] = useState(false);
 
     useEffect(() => {
-        console.log('isAuthenticated changed:', isAuthenticated);
     }, [isAuthenticated]);
 
     return (
@@ -19,7 +16,7 @@ const AbilitiesPage = () => {
             {isAuthenticated ? (
                 <>
                     <AbilitiesForm onAbilityCreated={() => setRefreshAbilities(!refreshAbilities)} />
-                    <AbilitiesList refreshAbilities={refreshAbilities} />
+                    <AbilitiesList refreshAbilities={refreshAbilities} onAbilityDeleted={() => setRefreshAbilities(!refreshAbilities)} />
                 </>
             ) : (
                 <UnathorizedMessage />

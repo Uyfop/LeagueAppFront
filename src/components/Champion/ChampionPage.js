@@ -11,14 +11,13 @@ const ChampionPage = () => {
         setRefreshChampions(!refreshChampions);
     };
     useEffect(() => {
-        console.log('isAuthenticated changed:', isAuthenticated);
     }, [isAuthenticated]);
     return (
         <div>
             {isAuthenticated ? (
                 <>
                     <ChampionForm onChampionCreated={handleChampionRefresh}/>
-                    <ChampionList refreshChampions={refreshChampions} onChampionDeleted={handleChampionRefresh}/>
+                    <ChampionList refreshItems={refreshChampions} onChampionDeleted={handleChampionRefresh}/>
                 </>
             ) : (
                 <UnathorizedMessage />
