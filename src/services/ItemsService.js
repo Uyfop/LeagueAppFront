@@ -10,12 +10,14 @@ const ItemsService = {
         axios.delete(API_BASE_URL + `/${itemName}`, { headers: headers }),
     updateItem: (itemName, updatedItem, headers) =>
         axios.put(API_BASE_URL + `/${itemName}`, updatedItem, { headers: headers }),
-
+    getAllItems: (headers) =>
+        axios.get(API_BASE_URL + '/all', { headers: headers }),
     getAllItemsWithPagination: (page, size, headers) => {
         return axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, {
             headers: headers,
         });
     },
+
 };
 
 export default ItemsService;

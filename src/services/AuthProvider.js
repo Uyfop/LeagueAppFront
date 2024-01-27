@@ -1,4 +1,3 @@
-// AuthProvider.js
 import {createContext, useContext, useEffect, useState} from 'react';
 
 const AuthContext = createContext();
@@ -12,6 +11,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(!!storedToken);
     }, []);
     const login = (userData) => {
+        console.log('userDATA', userData);
         setToken(userData);
         setIsAuthenticated(true);
         localStorage.setItem('token', userData);

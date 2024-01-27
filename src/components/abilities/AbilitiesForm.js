@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AbilitiesService from '../../services/AbilitiesService.js';
 import { useAuth } from '../../services/AuthProvider.js';
 import ChampionService from "../../services/ChampionService.js";
+import ChampionSelector from "../Builds/ChampionSelector.js";
 
 const AbilitiesForm = ({onAbilityCreated}) => {
     const [ability, setAbility] = useState({
@@ -40,21 +41,20 @@ const AbilitiesForm = ({onAbilityCreated}) => {
         }
         try {
             await ChampionService.getChampionById(championName, headers);
-        } catch (error) {
-            Errors.championNotFound = true;
-        }
-        try {
-            const abilities = await AbilitiesService.getAbilitiesByChampion(
+
+            const allAbilitiesResponse = await AbilitiesService.getAbilitiesByChampion(
                 championName,
                 headers
             );
-            const duplicateAbility = abilities.find((existingAbility) => existingAbility.abilityName === ability.abilityName
-            );
+            const abilities = allAbilitiesResponse.data.content;
+            console.log(abilities);
+            const duplicateAbility = abilities.find(existingAbility => existingAbility.abilityName === ability.abilityName);
+
             if (duplicateAbility) {
-                Errors.duplicateAbilityName= true;
+                Errors.duplicateAbilityName = true;
             }
         } catch (error) {
-                console.error('Error checking duplicate ability name:', error);
+            console.error('Error checking duplicate ability name:', error);
         }
         if (Object.keys(Errors).length > 0) {
             setErrors(Errors);
@@ -64,7 +64,7 @@ const AbilitiesForm = ({onAbilityCreated}) => {
         }
         await AbilitiesService.createAbility(ability, championName, headers)
             .then(response => {
-                console.log('Champion created:', response.data)
+                console.log('Ability created:', response.data)
                 onAbilityCreated(response.data);
                 setAbility({
                     abilityName: "",
@@ -79,8 +79,9 @@ const AbilitiesForm = ({onAbilityCreated}) => {
     const handleChange = e => {
         setAbility({ ...ability, [e.target.name]: e.target.value });
     };
-    const handleChampionNameChange = (e) => {
-        setChampionName(e.target.value);
+
+    const handleChampionSelect = (champion) => {
+       setChampionName(champion);
     };
 
     return (
@@ -88,19 +89,8 @@ const AbilitiesForm = ({onAbilityCreated}) => {
             <h1>Create Ability</h1>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Champion Name:
-                    <input
-                        type="text"
-                        name="championName"
-                        value={championName}
-                        onChange={handleChampionNameChange}
-                    />
-                    {errors.championNotFound && (
-                        <div style={{ color: 'red' }}>{errors.championNotFound}</div>
-                    )}
+                    <ChampionSelector onSelect={handleChampionSelect} />
                 </label>
-                <br />
-
                 <label>
                     Ability Name:
                     <input
@@ -112,6 +102,11 @@ const AbilitiesForm = ({onAbilityCreated}) => {
                     {errors.abilityName && (
                         <div style={{ color: 'red' }}>
                             {errorMessages.abilityName}
+                        </div>
+                    )}
+                    {errors.duplicateAbilityName && (
+                        <div style={{ color: 'red' }}>
+                            {errorMessages.duplicateAbilityName}
                         </div>
                     )}
                 </label>

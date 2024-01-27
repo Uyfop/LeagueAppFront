@@ -8,6 +8,7 @@ import Signup from "./components/Auth/Signup.js";
 import Login from "./components/Auth/Login.js";
 import AbilitiesPage from "./components/abilities/AbilitiesPage.js"
 import ItemsPage from "./components/Items/ItemsPage.js";
+import BuildsPage from "./components/Builds/BuildsPage.js";
 
 const App = () => {
     return (
@@ -21,6 +22,7 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/abilities" element={<AbilitiesPage/>} />
                     <Route path="/items" element={<ItemsPage/>} />
+                    <Route path="/builds" element={<BuildsPage/>}/>
                 </Routes>
             </Router>
         </AuthProvider>

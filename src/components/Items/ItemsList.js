@@ -78,10 +78,10 @@ const ItemsList = ({ refreshItems, onItemDeleted}) => {
 
     return (
         <div>
-            <h1>Champion List</h1>
-            <div className="champion-container">
+            <h1>Items List</h1>
+            <div className="item-container">
 
-                <div className="champion-info">
+                <div className="item-info">
                     <table>
                         <thead>
                         <tr>
@@ -144,7 +144,8 @@ const ItemsList = ({ refreshItems, onItemDeleted}) => {
                     </table>
                     <div>
                         <span>Page: {currentPage + 1}</span>
-                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+                        <button onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 0}>
                             Previous
                         </button>
                         <button onClick={() => handlePageChange(currentPage + 1)}

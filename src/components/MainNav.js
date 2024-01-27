@@ -7,7 +7,6 @@ const MainNav = () => {
     const { isAuthenticated, logout } = useAuth();
 
     useEffect(() => {
-        console.log('isAuthenticated changed:', isAuthenticated);
     }, [isAuthenticated]);
 
     const handleLogout = () => {
@@ -28,6 +27,9 @@ const MainNav = () => {
                 </li>
                 <li>
                     <Link to="/items">Items</Link>
+                </li>
+                <li>
+                    <Link to="/builds">Builds</Link>
                 </li>
                 {isAuthenticated ? (
                     <li className="nav-login">

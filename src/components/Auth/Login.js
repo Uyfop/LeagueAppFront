@@ -21,9 +21,9 @@ const Login = () => {
 
             if (response.ok) {
                 const token = await response.text();
-                console.log(token);
+                console.log('TOKEN LOGIN',token);
                 login(token);
-                console.log(login);
+                console.log('LOGIN LOGIN',login);
                 setCredentials({ email: '', password: '' });
                 navigate('/champions');
             } else {

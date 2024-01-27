@@ -131,7 +131,8 @@ const ChampionList = ({ refreshChampions, onChampionDeleted }) => {
                     </table>
                     <div>
                         <span>Page: {currentPage + 1}</span>
-                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+                        <button onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 0}>
                             Previous
                         </button>
                         <button onClick={() => handlePageChange(currentPage + 1)}
