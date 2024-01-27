@@ -1,0 +1,37 @@
+.main-nav{
+    background-color: cornflowerblue;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links .nav-login{
+
+}
+
+body {
+    margin: 0;
+}
+
+.nav-links a:hover {
+    color: purple;
+}

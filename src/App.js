@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
-import ChampionList from './components/ChampionList.js';
-import ChampionForm from './components/ChampionForm.js';
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import HomePage from "./components/HomePage.js";
+import ChampionPage from "./components/Champion/ChampionPage.js";
+import MainNav from "./components/MainNav.js";
+import {AuthProvider} from "./services/AuthProvider.js";
+import Signup from "./components/Auth/Signup.js";
+import Login from "./components/Auth/Login.js";
+import AbilitiesPage from "./components/abilities/AbilitiesPage.js"
+import ItemsPage from "./components/Items/ItemsPage.js";
 
 const App = () => {
-    const [refreshChampions, setRefreshChampions] = useState(false);
-
-    const handleChampionRefresh = () => {
-        setRefreshChampions(!refreshChampions);
-    };
-
     return (
-        <div>
-            <ChampionForm onChampionCreated={handleChampionRefresh} />
-            <ChampionList refreshChampions={refreshChampions} onChampionDeleted={handleChampionRefresh} />
-        </div>
+        <AuthProvider>
+            <Router>
+                <MainNav />
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/champions" element={<ChampionPage/>} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/abilities" element={<AbilitiesPage/>} />
+                    <Route path="/items" element={<ItemsPage/>} />
+                </Routes>
+            </Router>
+        </AuthProvider>
     );
 };
 
